@@ -1,12 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { googleLogout } from '@react-oauth/google';
 import { Loading } from "../../components/wait/Loading";
 import { toast } from "react-toastify";
 import { string } from "zod";
-import { AUTH_COOKIE, GOOGLE_AUTH_COOKIE, decodeCookie, deleteCookie, getCookie, setCookie } from "../cookies";
+import { AUTH_COOKIE, GOOGLE_AUTH_COOKIE, deleteCookie, getCookie, setCookie } from "../cookies";
 import { api } from "../services/api";
 
 interface IUser {
@@ -61,7 +60,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     if (cookie) {
       (async () => {
         api.defaults.headers.common["authorization"] = `Bearer ${cookie}`;
-        await api.get("user").then(({data}) => {
+        await api.get("/user").then(({data}) => {
           setUser({
             id: data.id,
             name: data.name,
@@ -127,7 +126,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   async function login({email, password}: { email: string, password: string}) {
     setLoading(true)
     await api
-      .post("user/login", {email, password})
+      .post("/user/login", {email, password})
       .then(async (s) => {
         toast("Login realizado com sucesso", {type: "success"})
         const token = s.data.token;
