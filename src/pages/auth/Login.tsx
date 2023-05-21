@@ -44,7 +44,7 @@ const Login: React.FC = () => {
           </Link>
 
           <div className="w-[320px] my-3 flex flex-col items-center">
-            <Divider variant='middle'>
+            <Divider variant='middle' sx={{my: 1.5}}>
               <Chip label="OU" />
             </Divider>
 
