@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import PageWrapper from "../components/Layout"
 import { AuthContext } from "../utils/contexts/AuthProvider";
-import { Person } from "phosphor-react";
+import { Person, UserCircle } from "phosphor-react";
 
 function Li({title, field}:{title: string, field: string}) {
   return <>
     <li className="flex gap-2 justify-start items-baseline">
-      <span className="font-semibold text-blue-500">{title}</span>
+      <span className="font-semibold text-blue-500">{title}:</span>
       <span className="text-zinc-500">{field}</span>
     </li>
   </>
@@ -24,7 +24,7 @@ const Profile = () => {
           user.photoUrl ? (
             <img loading="lazy" src={user.photoUrl} alt="avatar" className="aspect-square w-40 h-40 rounded-full border-zinc-300 border-2"/>
           ) : (
-            <Person />
+            <UserCircle size={160} weight="fill" className="text-blue-500" />
           )
         }
         
