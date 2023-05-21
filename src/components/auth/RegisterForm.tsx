@@ -13,7 +13,6 @@ import { api } from "../../utils/services/api";
 const schema = z.object({
   name: z.string().min(3, "Mínimo de 3 caracteres"),
   email: z.string().email("Insira um email válido"),
-  username: z.string().min(3, "Mínimo de 3 caracteres"),
   password: z.string().min(6, "Mínimo de 6 caracteres"),
   confirmPassword: z.string().min(6, "Mínimo de 6 caracteres"),
 }).superRefine(({password, confirmPassword}, ctx) => {
@@ -87,24 +86,7 @@ export const RegisterForm = () => {
           ),
       }}
       />
-      <TextField 
-        id="username"
-        type="text"
-        placeholder="Digite seu username"
-        variant="outlined"
-        {...register("username", { required: true })}
-        error={Boolean(errors.username)}
-        helperText={
-          errors.username ? errors.username.message?.toString() : undefined
-        }
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Person2 className="text-blue-500" fontSize="medium"/>
-            </InputAdornment>
-          ),
-      }}
-      />
+
       <TextField 
         id="email"
         type="email"
@@ -123,6 +105,7 @@ export const RegisterForm = () => {
           ),
       }}
       />
+
       <TextField 
         id="password"
         type={showPassword ? "text" : "password"}
@@ -151,6 +134,7 @@ export const RegisterForm = () => {
           )
       }}
       />
+
       <TextField 
         id="confirmPassword"
         type={showConfirmPassword ? "text" : "password"}
@@ -179,6 +163,7 @@ export const RegisterForm = () => {
           )
       }}
       />
+      
       <Button
         type="submit"
         variant="contained"
