@@ -12,16 +12,16 @@ const SearchBar: React.FC = () => {
   }
 
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json&key=${API_KEY}`)
+    // (async () => {
+    //   try {
+    //     const response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json&key=${API_KEY}`)
         
-        console.log({response})  
-      } catch (error) {
-        console.error({error})
+    //     // console.log({response})  
+    //   } catch (error) {
+    //     // console.error({error})
         
-      }
-    })()
+    //   }
+    // })()
     }, [])
 
   return (

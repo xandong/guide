@@ -9,7 +9,7 @@ export const GoogleLogin = () => {
   
   const handleGoogleAuth = useGoogleLogin({
     onSuccess: tokenResponse => {
-      handleAccessTokenGoogleAuth(tokenResponse.access_token)
+      handleAccessTokenGoogleAuth(tokenResponse.access_token.toString())
     },
     onError: error => console.error({error})
   })

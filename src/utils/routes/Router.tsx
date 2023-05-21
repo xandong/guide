@@ -41,7 +41,7 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
     if (!authenticated && path !== "/login") {
       navigate("/login", { replace: true });
     } else if (authenticated && path === "/login") {
-      navigate("/");
+      navigate(-1);
     }
   }, [authenticated, navigate]);
 

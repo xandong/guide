@@ -21,7 +21,9 @@ const Header: React.FC = () => {
   return (
     <React.Fragment>
       <header className="w-screen border-b rounded-b-xl shadow flex justify-between items-center sm:px-10 px-6 py-2 bg-zinc-50">
-        <img className="h-10 aspect-auto" src="guide-logo.svg" alt="" />
+        <Link to="/">
+          <img className="h-10 aspect-auto" src="guide-logo.svg" alt="" />
+        </Link>
 
         {authenticated ? (
           <div className="relative">

@@ -21,8 +21,6 @@ const Home: React.FC = () => {
     });
   }, [])
 
-  console.log({coords})
-
   return (
     <React.Fragment>
       <PageWrapper>

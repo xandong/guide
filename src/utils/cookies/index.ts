@@ -27,8 +27,8 @@ export function getCookie(name: string): string | undefined {
   return undefined;
 }
 
-export function decodeCookie(cookie: string): string {
-  return jwt_decode(cookie)
+export async function decodeCookie(cookie: string) {
+  return await jwt_decode(cookie)
 }
 
 export function deleteCookie(name: string): void {

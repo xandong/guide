@@ -5,19 +5,17 @@ import { googleLogout } from '@react-oauth/google';
 import { Loading } from "../../components/wait/Loading";
 import { toast } from "react-toastify";
 import { string } from "zod";
-import { AUTH_COOKIE, GOOGLE_AUTH_COOKIE, deleteCookie, getCookie, setCookie } from "../cookies";
+import { AUTH_COOKIE, GOOGLE_AUTH_COOKIE, decodeCookie, deleteCookie, getCookie, setCookie } from "../cookies";
 import { api } from "../services/api";
 
 interface IUser {
   id: string;
   name: string;
-  username: string;
   email: string;
   photoUrl: string;
 }
 interface AuthProps {
   authenticated: boolean;
-  accessTokenGoogleAuth: string;
   user: IUser,
   loading: boolean;
   login: ({email, password}: { email: string, password: string }) => void;
@@ -27,11 +25,9 @@ interface AuthProps {
 
 const initialValues: AuthProps = {
   authenticated: false,
-  accessTokenGoogleAuth: "",
   user: {
     id: "",
     name: "",
-    username: "",
     email: "",
     photoUrl: "",
   },
@@ -48,67 +44,76 @@ interface AuthProviderProps {
 }
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   const [authenticated, setAuthenticated] = useState(false)
-  const [accessTokenGoogleAuth, setAccessTokenGoogleAuth] = useState("");
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<IUser>(initialValues.user); 
+
   
   useEffect(() => {
     setLoading(true)
-
+    
     const cookie = getCookie(AUTH_COOKIE);
 
     if (cookie) {
-      (async () => {
-        api.defaults.headers.common["authorization"] = `Bearer ${cookie}`;
-        await api.get("/user").then(({data}) => {
-          setUser({
-            id: data.id,
-            name: data.name,
-            username: data.username,
-            email: data.email,
-            photoUrl: data.photo ? data.photo : "",
-          })
-          setAuthenticated(true)
-        }).catch((err) => {
-          console.error({err})
-          logout()
-        })
-      })()
+      api.defaults.headers.common["authorization"] = `Bearer ${cookie}`;
+      getUser()
     }
 
     const googleCookie = getCookie(GOOGLE_AUTH_COOKIE);
-
-    if (googleCookie) {
-      setAuthenticated(true)
+    
+    if (googleCookie && googleCookie !== "") {
+      handleAccessTokenGoogleAuth(googleCookie)
     }
 
     setLoading(false)
   }, [authenticated])
+
+  async function getUser() {
+    setLoading(true)
+
+    await api
+      .get("user")
+      .then(({data}) => {
+        setUser({
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          photoUrl: data.photo ? data.photo : "",
+        })
+        setAuthenticated(true);
+      }).catch((err) => {
+        if (err.response.data.message)
+          toast(err.response.data.message, {type: "error"})
+        console.error({err})
+        logout()
+      }).finally(() => {
+        return setLoading(false)
+      })
+  }
   
-  function handleAccessTokenGoogleAuth(token: string) {
+  async function handleAccessTokenGoogleAuth(token: string) {
     setLoading(true)
     setCookie(GOOGLE_AUTH_COOKIE, token)
-    setAuthenticated(true);
-
-    const apiKey = `${import.meta.env.VITE_KEY_CLIENT_GOOGLE}`;
-
-    const url = `https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=${apiKey}`;
-
-    axios
-      .get(url, {
-        headers: {
-          Authorization: `Bearer ${accessTokenGoogleAuth}`,
-        },
-      })
-      .then((response) => {
-        console.info({ user: response.data });
+    
+    await api
+    .post("/user/google", {accessToken: token})
+      .then(({data}) => {
+        setUser({
+          email: data.emailAddresses[0].value,
+          name: data.names[0].displayName,
+          photoUrl: data.photos[0].url,
+          id: data.resourceName,
+        })
+        setAuthenticated(true);
       })
       .catch((error) => {
-        console.error(error);
+        logoutGoogleAuth()
+        console.log({error});
       })
       .finally(() => setLoading(false));
-  }
 
+    return;
+  }
+    
   function logout() {
     setAuthenticated(false);
     setUser(initialValues.user);
@@ -117,10 +122,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   }
 
   function logoutGoogleAuth() {
-    logout();
-    googleLogout();
-    setAccessTokenGoogleAuth("");
+    setAuthenticated(false);
+    setUser(initialValues.user);
     deleteCookie(GOOGLE_AUTH_COOKIE)
+    api.defaults.headers.common["authorization"] = "";
+    googleLogout();
   }
 
   async function login({email, password}: { email: string, password: string}) {
@@ -132,23 +138,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
         const token = s.data.token;
         api.defaults.headers.common["authorization"] = `Bearer ${token}`;
         setCookie(AUTH_COOKIE, token)
-        await api
-          .get("user")
-          .then(({data}) => {
-            setUser({
-              id: data.id,
-              name: data.name,
-              username: data.username,
-              email: data.email,
-              photoUrl: data.photo ? data.photo : "",
-            })
-            setAuthenticated(true);
-          }).catch((err) => {
-            if (err.response.data.message)
-              toast(err.response.data.message, {type: "error"})
-            console.error({err})
-            logout()
-         })
+        getUser()
       })
       .catch((err):any => {
         console.error(err)
@@ -170,7 +160,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
       <AuthContext.Provider
         value={{
           authenticated,
-          accessTokenGoogleAuth,
           user,
           loading,
           login,

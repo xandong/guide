@@ -11,7 +11,7 @@ const CheckIn: React.FC = () => {
 
   function handle(e: any) {
     setName(e.target.value)
-    console.log(e.target.value)
+    // console.log(e.target.value)
   }
 
   function onSubmit(e: any) {
