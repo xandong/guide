@@ -43,7 +43,7 @@ const Login: React.FC = () => {
             <span className="text-xs text-blue-400 font-semibold">Não possui uma conta? Clique aqui!</span>
           </Link>
 
-          <div className="w-[320px] mt-3 flex flex-col items-center">
+          <div className="w-[320px] my-3 flex flex-col items-center">
             <Divider variant='middle'>
               <Chip label="OU" />
             </Divider>
