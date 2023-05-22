@@ -28,7 +28,7 @@ const SearchBar: React.FC = () => {
     <React.Fragment>
       <fieldset className="md:w-[540px] sm:w-[420px] w-full border border-zinc-300 rounded text-zinc-500 my-2 flex items-center bg-blue-500">
         <input
-          className="w-full font-medium px-2 py-2 border-b-2 border-zinc-300 hover:border-zinc-400 focus:outline-none focus:border-b-blue-500"
+          className="w-full font-medium px-2 py-2 border-b-2 bg-zinc-50 border-zinc-300 hover:border-zinc-400 focus:outline-none focus:border-b-blue-500"
           placeholder="Para onde devo te guiar?"
           type="search"
           value={search}

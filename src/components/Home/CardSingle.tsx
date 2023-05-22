@@ -12,7 +12,7 @@ const CardSingle: React.FC<CardSingleProps> = (props: CardSingleProps) => {
     <React.Fragment>
         <Link
           to={option.path}
-          className="relative w-fit sm:h-fit h-32 rounded-lg overflow-hidden shadow-md hover:shadow-xl shadow-zinc-200 hover:shadow-zinc-300 transition-all duration-300 hover:scale-[1.025] sm:m-3 sm:mx-6 m-1 p-px"
+          className="relative w-fit sm:h-fit h-40 rounded-lg overflow-hidden shadow-md hover:shadow-xl shadow-zinc-200 hover:shadow-zinc-300 transition-all duration-300 hover:scale-[1.025] sm:mx-6 m-1 p-px"
           >
           <img
             id={option.label}
