@@ -7,7 +7,7 @@ import AfterHeader from "./AfterHeader";
 import { Button, Menu, MenuItem } from "@mui/material";
 
 const Header: React.FC = () => {
-  const { authenticated, logoutGoogleAuth } = useContext(AuthContext);
+  const { authenticated, logoutGoogleAuth, logout } = useContext(AuthContext);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -55,10 +55,13 @@ const Header: React.FC = () => {
             >
               <Link to="/profile">
                 <MenuItem>
-                  Profile
+                  Perfil
                 </MenuItem>
               </Link>
-              <MenuItem onClick={logoutGoogleAuth}>Logout</MenuItem>
+              <MenuItem onClick={() => {
+                logoutGoogleAuth()
+                logout()
+                }}>Sair da conta</MenuItem>
             </Menu>
           </div>
         ) : (

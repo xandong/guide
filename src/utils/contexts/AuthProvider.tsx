@@ -20,6 +20,7 @@ interface AuthProps {
   loading: boolean;
   login: ({email, password}: { email: string, password: string }) => void;
   logoutGoogleAuth: () => void;
+  logout: () => void;
   handleAccessTokenGoogleAuth: (accessToken: string) => void;
 }
 
@@ -34,6 +35,7 @@ const initialValues: AuthProps = {
   loading: true,
   login: ({email, password}: { email: string, password: string }) => {},
   logoutGoogleAuth: () => {},
+  logout: () => {},
   handleAccessTokenGoogleAuth: (accessToken: string) => {},
 };
 
@@ -103,15 +105,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
           photoUrl: data.photos[0].url,
           id: data.resourceName,
         })
-        setAuthenticated(true);
       })
       .catch((error) => {
         logoutGoogleAuth()
         console.log({error});
       })
-      .finally(() => setLoading(false));
-
-    return;
+      setLoading(false)
+      setAuthenticated(true)
   }
     
   function logout() {
@@ -146,6 +146,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
           toast(err.response.data.message, {type: "error"})
         } else {
           toast("Ops... Um erro inesperado aconteceu. Tente novamente mais tarde", {type: "error"})
+          toast(JSON.stringify(err.response.data.message), {type: "error"})
         }
       })
       .finally(() => setLoading(false))
@@ -164,6 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
           loading,
           login,
           logoutGoogleAuth,
+          logout,
           handleAccessTokenGoogleAuth,
         }}
       >
